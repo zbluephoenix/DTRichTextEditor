@@ -229,6 +229,15 @@ typedef NS_ENUM(NSUInteger, DTHTMLWriterOption)
 - (void)replaceRange:(UITextRange *)range withAttachment:(DTTextAttachment *)attachment inParagraph:(BOOL)inParagraph;
 
 /**
+ Inserts an attachment in the given text range.
+ @param range The text range for the insertion
+ @param attachment The text attachment to be inserted
+ @param beforeString The string is before attachment
+ @param afterString The string is after attachment
+ */
+- (void)replaceRange:(DTTextRange *)range withAttachment:(DTTextAttachment *)attachment beforeString:(NSString *)beforeString afterString:(NSString *)afterString;
+
+/**
  Retrieving the attachments that match a predicate.
  @param predicate The `NSPredicate` that will be used to check the DTTextAttachment key values against
  @returns An array of matching attachments

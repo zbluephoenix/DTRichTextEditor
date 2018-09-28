@@ -893,6 +893,63 @@
     [self.undoManager endUndoGrouping];
 }
 
+- (void)replaceRange:(DTTextRange *)range withAttachment:(DTTextAttachment *)attachment beforeString:(NSString *)beforeString afterString:(NSString *)afterString
+{
+    // close off typing group, this is a new operations
+    [self _closeTypingUndoGroupIfNecessary];
+    
+    NSRange textRange = [(DTTextRange *)range NSRangeValue];
+    
+    NSMutableDictionary *attributes = [[self typingAttributesForRange:range] mutableCopy];
+    
+    // just in case if there is an attachment at the insertion point
+    [attributes removeAttachment];
+    
+    NSString *plainText = [self.attributedTextContentView.layoutFrame.attributedStringFragment string];
+
+    NSMutableAttributedString *tmpAttributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+    
+    if (beforeString.length > 0)
+    {
+        NSAttributedString *formattedNL = [[NSAttributedString alloc] initWithString:beforeString attributes:attributes];
+        [tmpAttributedString appendAttributedString:formattedNL];
+    }
+    
+    NSMutableDictionary *objectAttributes = [attributes mutableCopy];
+    
+    // need run delegate for sizing
+    CTRunDelegateRef embeddedObjectRunDelegate = createEmbeddedObjectRunDelegate((id)attachment);
+    [objectAttributes setObject:(__bridge id)embeddedObjectRunDelegate forKey:(id)kCTRunDelegateAttributeName];
+    CFRelease(embeddedObjectRunDelegate);
+    
+    // add attachment
+    [objectAttributes setObject:attachment forKey:NSAttachmentAttributeName];
+    
+    // get the font
+    CTFontRef font = (__bridge CTFontRef)[objectAttributes objectForKey:(__bridge NSString *) kCTFontAttributeName];
+    if (font)
+    {
+        [attachment adjustVerticalAlignmentForFont:font];
+    }
+    
+    NSAttributedString *tmpStr = [[NSAttributedString alloc] initWithString:UNICODE_OBJECT_PLACEHOLDER attributes:objectAttributes];
+    [tmpAttributedString appendAttributedString:tmpStr];
+    
+    if (afterString.length > 0)
+    {
+        NSAttributedString *formattedNL = [[NSAttributedString alloc] initWithString:afterString attributes:attributes];
+        [tmpAttributedString appendAttributedString:formattedNL];
+    }
+    
+    DTTextRange *replacementRange = [DTTextRange rangeWithNSRange:textRange];
+    [self replaceRange:replacementRange withText:tmpAttributedString];
+    
+    // change undo action name from typing to inserting image
+    [self.undoManager beginUndoGrouping];
+    [self.undoManager setActionName:NSLocalizedString(@"Insert Image", @"Undoable Action")];
+    [self.undoManager endUndoGrouping];
+}
+
 - (NSArray *)textAttachmentsWithPredicate:(NSPredicate *)predicate
 {
 	// update all attachments that matchin this URL (possibly multiple images with same size)
