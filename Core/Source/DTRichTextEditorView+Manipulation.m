@@ -888,7 +888,9 @@
 	[self replaceRange:replacementRange withText:tmpAttributedString];
 
 	// change undo action name from typing to inserting image
-	[self.undoManager setActionName:NSLocalizedString(@"Insert Image", @"Undoable Action")];
+    [self.undoManager beginUndoGrouping];
+    [self.undoManager setActionName:NSLocalizedString(@"Insert Image", @"Undoable Action")];
+    [self.undoManager endUndoGrouping];
 }
 
 - (NSArray *)textAttachmentsWithPredicate:(NSPredicate *)predicate
