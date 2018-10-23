@@ -236,7 +236,7 @@ typedef NS_ENUM(NSUInteger, DTHTMLWriterOption)
  @param afterString The string is after attachment
  @warning afterString can not be a newline symbol
  */
-- (void)replaceRange:(DTTextRange *)range withAttachment:(DTTextAttachment *)attachment beforeString:(NSString *)beforeString afterString:(NSString *)afterString;
+- (void)replaceRange:(UITextRange *)range withAttachment:(DTTextAttachment *)attachment beforeString:(NSString *)beforeString afterString:(NSString *)afterString;
 
 /**
  Retrieving the attachments that match a predicate.
