@@ -234,6 +234,7 @@ typedef NS_ENUM(NSUInteger, DTHTMLWriterOption)
  @param attachment The text attachment to be inserted
  @param beforeString The string is before attachment
  @param afterString The string is after attachment
+ @warning afterString can not be a newline symbol
  */
 - (void)replaceRange:(DTTextRange *)range withAttachment:(DTTextAttachment *)attachment beforeString:(NSString *)beforeString afterString:(NSString *)afterString;
 
