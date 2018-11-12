@@ -274,6 +274,22 @@
 		{
 			return;
 		}
+        
+        NSUInteger insertionIndex = 0;
+        
+        if (paragraphs.location > 0)
+        {
+            NSArray *preParaLines = [self linesInParagraphAtIndex:paragraphs.location-1];
+            
+            DTCoreTextLayoutLine *lineBefore = [preParaLines lastObject];
+            insertionIndex = [_lines indexOfObject:lineBefore] + 1;
+        }
+        
+        // 提前判断 insertionIndex 是否为 NSNotFound
+        // 目前 iPhoneX 11.0.3 出现过 NSNotFound 情况，测试未曾复现
+        if (NSNotFound == insertionIndex - 1) {
+            return;
+        }
 		
 		// make this replacement in our local copy
 		[(NSMutableAttributedString *)_attributedStringFragment replaceCharactersInRange:range withAttributedString:text];
@@ -286,17 +302,6 @@
 		DTCoreTextLayoutFrame *tmpFrame = [tmpLayouter layoutFrameWithRect:rect range:allTextRange];
 		
 		NSArray *relayoutedLines = tmpFrame.lines;
-		
-		NSUInteger insertionIndex = 0;
-		
-		if (paragraphs.location > 0)
-		{
-			NSArray *preParaLines = [self linesInParagraphAtIndex:paragraphs.location-1];
-			
-			DTCoreTextLayoutLine *lineBefore = [preParaLines lastObject];
-			insertionIndex = [_lines indexOfObject:lineBefore] + 1;
-		}
-		
 		
 		// remove the changed lines
 		NSMutableArray *tmpArray = [self.lines mutableCopy];
