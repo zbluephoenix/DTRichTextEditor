@@ -255,6 +255,7 @@ typedef enum
 	// --- look
     self.backgroundColor = [UIColor whiteColor];
 	self.editable = YES;
+    self.enableLongPress = YES;
     self.selectionAffinity = UITextStorageDirectionForward;
 	self.userInteractionEnabled = YES; 	// for autocorrection candidate view
 	self.attributedTextContentView.edgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
@@ -299,6 +300,7 @@ typedef enum
 	{
 		longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
 		longPressGesture.delegate = self;
+        longPressGesture.enabled = self.enableLongPress;
 		[self addGestureRecognizer:longPressGesture];
 	}
 	
@@ -1594,6 +1596,20 @@ typedef enum
     }
 }
 
+#pragma mark - Gesture Enable State
+@synthesize enableLongPress = _enableLongPress;
+
+- (void)setEnableLongPress:(BOOL)enableLongPress
+{
+    if (_enableLongPress == enableLongPress)
+        return;
+    
+    _enableLongPress = enableLongPress;
+    
+    if (longPressGesture) {
+        longPressGesture.enabled = _enableLongPress;
+    }
+}
 
 #pragma mark - UIResponder
 

@@ -210,6 +210,12 @@ extern NSString * const DTRichTextEditorTextDidEndEditingNotification;
  */
 @property (nonatomic, copy) NSAttributedString *attributedText;
 
+/**
+ Specifies that the longPressGesture is enable state.
+ Default  YES
+ */
+@property (nonatomic, getter=isEnableLongPress) BOOL enableLongPress;
+
 @end
 
 
