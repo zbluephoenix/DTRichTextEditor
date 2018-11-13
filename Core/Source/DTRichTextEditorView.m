@@ -2278,6 +2278,21 @@ typedef enum
 {
 	NSParameterAssert(range);
     
+    // Check with editor delegate to allow change
+    if (_editorViewDelegateFlags.delegateShouldChangeTextInRangeReplacementText)
+    {
+        NSAttributedString *replacementText;
+        if ([text isKindOfClass:NSAttributedString.class]) {
+            replacementText = text;
+        } else if ([text isKindOfClass:NSString.class]) {
+            replacementText = [[NSAttributedString alloc] initWithString:text];
+        } else {
+            replacementText = [[NSAttributedString alloc] init];
+        }
+        if (![self.editorViewDelegate editorView:self shouldChangeTextInRange:[range NSRangeValue] replacementText:replacementText])
+            return;
+    }
+    
     NSAttributedString *attributedStringBeingReplaced = nil;
     
 	NSAttributedString *attributedText = self.attributedText;
